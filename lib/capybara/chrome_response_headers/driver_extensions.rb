@@ -30,7 +30,7 @@ module Capybara::ChromeResponseHeaders
         next if Capybara::ChromeResponseHeaders.ignore_urls && request.url.match(Capybara::ChromeResponseHeaders.ignore_urls)
 
         @request_for_url[request.url] = request
-        puts "Requesting #{request.url}" if Capybara::ChromeResponseHeaders.verbose
+        puts "Requesting #{request.url}" if Capybara::ChromeResponseHeaders.trace_requests
       end
 
       chrome.on "Network.responseReceived" do |arg|
@@ -39,7 +39,7 @@ module Capybara::ChromeResponseHeaders
 
         # TODO: Use/return a Rack::Response like Rack::Test does
         @response_for_url[response.url] = response
-        puts %(Response for #{response.url}: #{response.status} #{response.statusText}) if Capybara::ChromeResponseHeaders.verbose
+        puts %(Response for #{response.url}: #{response.status} #{response.statusText}) if Capybara::ChromeResponseHeaders.trace_responses
       end
 
       @listener_thread = Thread.new do

@@ -43,10 +43,45 @@ Example:
       end
 ```
 
+## Tracing
+
+To have it show a trace of all requests and/or responses that are made from the web pages you are interacting with, enable these settings, respectively:
+
+```
+Capybara::ChromeResponseHeaders.trace_requests  = true
+Capybara::ChromeResponseHeaders.trace_responses = true
+```
+
+The output for responses is something like this:
+```
+Response for http://127.0.0.1:40359/users/sign_in: 200 OK
+Response for http://127.0.0.1:40359/admin: 200 OK
+```
+
+By default, it tries to filter out requests for assets. (`Capybara::ChromeResponseHeaders.ignore_urls` is set to `/\.(js|css|png|gif|jpg)$/`.)
+
+You can turn off this filtering by setting `Capybara::ChromeResponseHeaders.ignore_urls = nil`, or
+set it to a different Regexp pattern to ignore.
+
+If you want other behavior to happen on each request or response, you should be able to add it via `dev_tools` (a [ChromeRemote]((https://github.com/cavalle/chrome_remote) instance):
+
+```ruby
+      dev_tools.on "Network.requestWillBeSent" do |arg|
+        request = OpenStruct.new(arg["request"])
+        puts "Requesting #{request.url}"
+      end
+
+      dev_tools.on "Network.responseReceived" do |arg|
+        response = OpenStruct.new(arg["response"])
+        puts %(Response for #{response.url}"
+      end
+```
+
 ## Why?
 
-Because it's useful to be able to check the HTTP status code, and many people have wanted that
-ability, and because the WebDriver maintainers have no intention of adding this feature:
+Because it can be useful to be able to check the HTTP status code in tests.  Many people have wanted
+that ability. And the WebDriver maintainers have no intention of adding this feature. See, for
+example:
 
 - https://github.com/seleniumhq/selenium-google-code-issue-archive/issues/141
 - https://github.com/SeleniumHQ/selenium/issues/4976

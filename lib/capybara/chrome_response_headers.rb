@@ -6,9 +6,13 @@ module Capybara::ChromeResponseHeaders
 
   class << self
     attr_accessor :verbose
+    attr_accessor :trace_requests
+    attr_accessor :trace_responses
     attr_accessor :ignore_urls
   end
-  self.verbose = nil
+  self.verbose = 0
+  self.trace_requests = false
+  self.trace_responses = false
   # The default is to try to ignore asset files so that hopefully what's left is just HTML/API
   # requests.
   self.ignore_urls = /\.(js|css|png|gif|jpg)$/
