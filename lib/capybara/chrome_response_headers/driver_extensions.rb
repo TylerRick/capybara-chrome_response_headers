@@ -14,7 +14,9 @@ module Capybara::ChromeResponseHeaders
 
     def browser
       super.tap do |browser|
-        listen_to_network_traffic unless @listening_to_network_traffic
+        if Capybara::ChromeDevTools.enabled and !@listening_to_network_traffic
+          listen_to_network_traffic
+        end
       end
     end
 
